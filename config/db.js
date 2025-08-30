@@ -1,10 +1,7 @@
 import mongoose from "mongoose";
-import dotenv from 'dotenv';
-dotenv.config();
-
-const URL = process.env.MONGODB_URL;
 
 export async function connectToDataBase(){
+    const URL = process.env.MONGODB_URL;
     try{
         await mongoose.connect(URL);
         console.log('DataBase Connected Successfully');
