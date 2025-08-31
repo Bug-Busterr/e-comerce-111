@@ -3,6 +3,7 @@ import User from '../models/user.model.js'
 import {SUCCESS , BAD_REQUEST} from "../utils/http_status_code.js";
 import bcrypt from "bcryptjs";
 import { generateToken } from "../services/jwt.service.js";
+import { NOT_FOUND, UNAUTHORIZED } from "../utils/http_status_code.js";
 
 export const getAllUsers = asyncWrapper(async (req,res) => {
     const query = req.query;
@@ -156,5 +157,62 @@ export const forgetPassword = asyncWrapper(async (req, res, next) => {
     res.status(SUCCESS).json({ status: SUCCESS, message: "Password updated successfully" });
 });
 
-export const userProfile = asyncWrapper(async (req, res, next) => {});
+export const userProfile = asyncWrapper(async (req, res, next) => {
+const currentUser=req.currentUser;
+if(!currentUser){
+    return res.status(BAD_REQUEST).json({message:"user not found"});
+}
+const user = await User.findById(currentUser._id);
+  if (!user) {
+    return res.status(BAD_REQUEST).json({ message: "user not found in database" });
+  }
+  if (!req.body ||Object.keys(req.body).length === 0) {
+    return res.json({ status: SUCCESS,  data: {
+      name: user.name,
+      email: user.email,
+      address: user.address,
+    } });
+  }
+  const { currPassword, newPassword, confirmPassword, ...restFields } = req.body;
+
+  if (Object.keys(restFields).length > 0) {
+  Object.keys(restFields).forEach((key) => {
+    user[key] = restFields[key];
+  });
+}
+
+  if (currPassword || newPassword || confirmPassword) {
+    if (!currPassword || !newPassword || !confirmPassword) {
+      return res.status(BAD_REQUEST).json({
+        message: "you must provide curr Password, new Password and confirm Password",
+      });
+    }
+
+    if (newPassword !== confirmPassword) {
+      return res
+        .status(BAD_REQUEST)
+        .json({ message: "new Password and confirm Password do not match" });
+    }
+
+    const isPasswordCorrect = await bcrypt.compare(currPassword, user.password);
+
+    if (!isPasswordCorrect) {
+      return res.status(BAD_REQUEST).json({ message: "current password is wrong" });
+    }
+
+    user.password = await bcrypt.hash(newPassword, 10);
+  }
+
+  await user.save();
+
+  res.json({
+    status: SUCCESS,
+    message: "Profile updated successfully",
+    data: {
+      name: user.name,
+      email: user.email,
+      address: user.address,
+    },
+  });
+});
 

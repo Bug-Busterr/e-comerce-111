@@ -11,8 +11,9 @@ import {
     userProfile,
     forgetPassword
 } from "../controllers/users.controller.js";
-import { validate } from "../middleware/validat.js";
+import { validate } from "../middleware/validate.js";
 import { SignUpSchema } from "../middleware/validationSchema.js";
+import { verifyToken } from "../services/jwt.service.js";
 
 const diskStorage = multer.diskStorage({
     destination: (req, file, cb) => cb(null , 'uploads'),
@@ -53,7 +54,7 @@ router.route('/forgotPassword')
             .patch(forgetPassword)
 
 router.route('/me')
-            .patch(userProfile)
+            .patch(verifyToken,userProfile)
 
 
 export default router;
