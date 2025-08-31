@@ -8,12 +8,20 @@ const userSchema = new mongoose.Schema({
     },
     email: {
         type: String,
-        required: true,
+        required: false,
+        sparse: true 
+    },
+    phone: {
+        type: String,
+        required: false,
+        sparse: true ,
         unique: true,
+        match: [/^01[0-9]{9}$/, 'Please fill a valid phone number']
     },
     password: {
         type: String,
-        required: true
+        required: true,
+        
     },
     token: {
         type: String
@@ -28,5 +36,9 @@ const userSchema = new mongoose.Schema({
         default: 'uploads/profile.png'
     }
 })
+
+
+userSchema.index({ email: 1 }, { unique: true, sparse: true });
+userSchema.index({ phone: 1 }, { unique: true, sparse: true });
 
 export default mongoose.model('users', userSchema);
