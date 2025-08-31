@@ -13,7 +13,7 @@ class AppError extends Error {
     }
 }
 
-export default AppError();
+export default new AppError();
 
 export class CustomError extends Error {
     constructor(message, statusCode) {

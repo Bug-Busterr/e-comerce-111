@@ -48,10 +48,10 @@ router.route('/signupwithgoogle')
             .post(signUpWithGoogle)
 
 router.route('/forgotPassword')
-            .post(forgetPassword)
+            .patch(forgetPassword)
 
-router.route('/profile')
-            .put(userProfile)
+router.route('/me')
+            .patch(userProfile)
 
 
 export default router;
