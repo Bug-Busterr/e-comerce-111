@@ -11,6 +11,8 @@ import {
     userProfile,
     forgetPassword
 } from "../controllers/users.controller.js";
+import { validate } from "../middleware/validat.js";
+import { SignUpSchema } from "../middleware/validationSchema.js";
 
 const diskStorage = multer.diskStorage({
     destination: (req, file, cb) => cb(null , 'uploads'),
@@ -39,7 +41,7 @@ router.route('/')
             .get(getAllUsers)
 
 router.route('/register')
-            .post(upload.single('avatar') , register)
+            .post(validate(SignUpSchema),upload.single('avatar') , register)
 
 router.route('/login')
             .post(login)

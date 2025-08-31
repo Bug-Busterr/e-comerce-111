@@ -8,10 +8,13 @@ export const SignUpSchema = Joi.object({
         "string.max": "Name must be less than or equal to 100 characters",
         "any.required": "Name is required",
     }),
-    email: Joi.string().email().required().messages({
+    email: Joi.string().email().messages({
         "string.email": "Email must be a valid email",
         "string.empty": "Email is required",
-        "any.required": "Email is required",
+    }),
+     phone: Joi.string().regex(/^01[0-9]{9}$/).messages({
+        "string.phone": "phone must be a valid phone",
+        "string.empty": "phone is required",
     }),
     password: Joi.string().min(6).max(128).required().messages({
         "string.min": "Password must be at least 6 characters",
