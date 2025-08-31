@@ -22,6 +22,18 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;ahmedali109&quot;
+  }
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/Bug-Busterr/e-commerce-Api-NodeJsBackend.git&quot;,
+    &quot;accountId&quot;: &quot;99e463cb-9938-4323-be87-cb208f631076&quot;
+  }
+}</component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 3
 }</component>
@@ -43,6 +55,7 @@
     "node.js.selected.package.eslint": "(autodetect)",
     "node.js.selected.package.tslint": "(autodetect)",
     "nodejs_package_manager_path": "npm",
+    "settings.editor.selected.configurable": "preferences.lookFeel",
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
@@ -67,7 +80,8 @@
       <option name="presentableId" value="Default" />
       <updated>1756570671708</updated>
       <workItem from="1756570672604" duration="15000" />
-      <workItem from="1756571212280" duration="6170000" />
+      <workItem from="1756571212280" duration="8333000" />
+      <workItem from="1756582448798" duration="587000" />
     </task>
     <servers />
   </component>
