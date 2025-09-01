@@ -37,21 +37,14 @@ export const CreateOrderSchema = Joi.object({
     }),
     products: Joi.array().min(1).items(
         Joi.object({
-            name: Joi.string().required().messages({
-                "string.base": "Product name must be a string",
-                "string.empty": "Product name is required",
-                "any.required": "Product name is required",
+            product: objectId.required().messages({
+                "any.required": "Product ID is required",
             }),
             quantity: Joi.number().integer().min(1).required().messages({
                 "number.base": "Quantity must be a number",
                 "number.integer": "Quantity must be an integer",
                 "number.min": "Quantity must be positive and not negative",
                 "any.required": "Quantity is required",
-            }),
-            price: Joi.number().min(0).required().messages({
-                "number.base": "Price must be a number",
-                "number.min": "Price must be positive and not negative",
-                "any.required": "Price is required",
             }),
         })
     ).required().messages({
@@ -74,6 +67,10 @@ export const CreateOrderSchema = Joi.object({
         "object.base": "Shipping details must be an object",
         "any.required": "Shipping details are required",
     }),
+    status: Joi.string().valid("Pending", "Shipped", "Delivered", "Canceled").messages({
+        "any.only": "Status must be one of: Pending, Shipped, Delivered, Canceled",
+        "string.base": "Status must be a string",
+    }),
 });
 
 export const UpdateOrderSchema = Joi.object({
@@ -83,21 +80,14 @@ export const UpdateOrderSchema = Joi.object({
     }),
     products: Joi.array().min(1).items(
         Joi.object({
-            name: Joi.string().required().messages({
-                "string.base": "Product name must be a string",
-                "string.empty": "Product name is required",
-                "any.required": "Product name is required",
+            product: objectId.required().messages({
+                "any.required": "Product ID is required",
             }),
             quantity: Joi.number().integer().min(1).required().messages({
                 "number.base": "Quantity must be a number",
                 "number.integer": "Quantity must be an integer",
                 "number.min": "Quantity must be positive and not negative",
                 "any.required": "Quantity is required",
-            }),
-            price: Joi.number().min(0).required().messages({
-                "number.base": "Price must be a number",
-                "number.min": "Price must be positive and not negative",
-                "any.required": "Price is required",
             }),
         })
     ).messages({
