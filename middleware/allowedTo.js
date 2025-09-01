@@ -5,6 +5,6 @@ export const allowedTo = (...roles) => {
         if(!roles.includes(req.user.role)) {
             return next(new UnAuthorizedError("You are not authorized to access this resource"));
         }
-        next();
-    }
+        next();
+    }
 }
