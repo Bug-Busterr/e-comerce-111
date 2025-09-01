@@ -3,9 +3,13 @@ import cors from "cors";
 import {NOT_FOUND} from "./utils/http_status_code.js";
 import router from "./routes/index.js"
 import { globalErrorHandler } from "./middleware/globalErrorHandler.js";
+import { corsOptions } from "./config/corsOption.js";
+import helmet from "helmet";
+
 const app = express();
 
-app.use(cors());
+app.use(cors(corsOptions));
+app.use(helmet());
 app.use(express.json());
 
 app.use("/api" , router);

@@ -6,14 +6,20 @@ import {
 } from "../http_status_code.js";
 
 class AppError extends Error {
-    createError({message , status}){
-        this.message = message;
-        this.status = status;
-        return this;
-    }
+  constructor(message, statusCode, statusText) {
+    super(message);
+    this.statusCode = statusCode;
+    this.statusText = statusText || "Fail";
+    this.name = this.constructor.name;
+    Error.captureStackTrace(this, this.constructor);
+  }
+
+  static createError(message, statusCode, statusText) {
+    return new AppError(message, statusCode, statusText);
+  }
 }
 
-export default new AppError();
+export default AppError;
 
 export class CustomError extends Error {
     constructor(message, statusCode) {
