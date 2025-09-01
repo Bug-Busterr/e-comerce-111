@@ -2,7 +2,7 @@ import Joi from 'joi';
 
 
 export const productValidationSchema = Joi.object({
-  name: Joi.string().min(2).max(20).required().messages({
+  name: Joi.string().min(2).max(200).required().messages({
     'string.empty': 'Name is required',
     'string.min': 'Name must be at least 2 characters',
     'string.max': 'Name must be less than or equal to 20 characters'
