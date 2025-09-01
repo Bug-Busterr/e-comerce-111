@@ -14,8 +14,8 @@ import {
 } from "./product.controller.js";
 import { userRoles } from "../../../utils/userRoles.js";
 
-router.get("/",protect,getAllProducts );
-router.get("/:productId",protect,getProductById );
+router.get("/",getAllProducts );
+router.get("/:productId",getProductById );
 router.post("/",protect,allowedTo(userRoles.ADMIN),validate(productValidationSchema),createProduct);
 router.patch("/:productId",protect,allowedTo(userRoles.ADMIN), updateProductById);
 router.delete("/:productId",protect,allowedTo(userRoles.ADMIN), deleteProductById);

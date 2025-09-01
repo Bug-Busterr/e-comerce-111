@@ -18,12 +18,30 @@ export const getAllProducts = asyncWrapper(async (req, res, next) => {
   const limit = quary.limit || 0;
   const page = quary.page || 1;
   const skip = (page - 1) * limit;
+
+    let filter = { deleted: false };
+  if (req.query.search) {
+    const searchRegex = new RegExp(req.query.search, "i");
+    filter.$or = [
+      { name: searchRegex },
+      { category: searchRegex }
+    ];
+  }
+
+  
+  let sort = {};
+  if (req.query.sort) {
+    const [field, order] = req.query.sort.split("_");
+    sort[field] = order === "asc" ? 1 : -1;
+  }
+
+
   const data = await Product.find(
-    { deleted: false },
+    filter ,
     { name: 1, price: 1, stockQuantity: 1, category: 1 }
   )
     .limit(limit)
-    .skip(skip);
+    .skip(skip).sort(sort);
   res.json({ status: "SUCCESS", data: { products: data } });
 });
 
