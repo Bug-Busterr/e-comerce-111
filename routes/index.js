@@ -1,10 +1,10 @@
 import { Router } from "express";
 import userRoutes from "./users.route.js"
-import productRoute from "../models/Admin/Products/product.route.js";
+import adminOrderRoutes from "./order/order.route.js"
 
 const router = Router();
 
 router.use("/auth", userRoutes);
-router.use("/Admin/products", productRoute);
+router.use("/auth/admin/orders", adminOrderRoutes);
 
 export default router;

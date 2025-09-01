@@ -24,11 +24,11 @@ export const protect = async (req, res, next) => {
                 data: null 
             });
         }
-} else {
+    } else {
         return res.status(401).json({ 
             status: "error",
             message: "Not authorized, no token",
             data: null 
-        });
-    }
+        });
+    }
 };
