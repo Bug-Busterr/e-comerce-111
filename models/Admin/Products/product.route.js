@@ -1,7 +1,7 @@
 import express from "express";
 import multer from 'multer';
 const router = express.Router();
-import { verifyToken } from "../../../services/jwt.service.js";
+import { protect } from "../../../middleware/authMiddleware.js";
 import { validate } from "../../../middleware/validate.js";
 import { productValidationSchema } from "../../../Validation/productSchema.js";
 import { allowedTo } from "../../../middleware/allowedTo.js";
@@ -12,12 +12,12 @@ import {
     updateProductById,
     deleteProductById
 } from "./product.controller.js";
-import { userRoles } from "../../../utils/userRoles";
+import { userRoles } from "../../../utils/userRoles.js";
 
-router.get("/",verifyToken,allowedTo(userRoles.ADMIN),getAllProducts );
-router.get("/:productId",verifyToken,allowedTo(userRoles.ADMIN),getProductById );
-router.post("/",verifyToken,allowedTo(userRoles.ADMIN),validate(productValidationSchema),createProduct);
-router.patch("/:productId",verifyToken,allowedTo(userRoles.ADMIN),validate(productValidationSchema), updateProductById);
-router.delete("/:productId",verifyToken,allowedTo(userRoles.ADMIN), deleteProductById);
+router.get("/",protect,getAllProducts );
+router.get("/:productId",protect,getProductById );
+router.post("/",protect,allowedTo(userRoles.ADMIN),validate(productValidationSchema),createProduct);
+router.patch("/:productId",protect,allowedTo(userRoles.ADMIN), updateProductById);
+router.delete("/:productId",protect,allowedTo(userRoles.ADMIN), deleteProductById);
 
 export default router;

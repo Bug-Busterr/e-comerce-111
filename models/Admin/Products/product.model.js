@@ -23,8 +23,12 @@ const productSchema = new mongoose.Schema({
     },
         images: {   
         type:String,
-        default: []
+        default:""
     },
+    deleted:{
+        type: Boolean,
+        default:false
+    }
 })
 
 

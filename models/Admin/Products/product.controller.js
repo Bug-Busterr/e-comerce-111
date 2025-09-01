@@ -1,50 +1,95 @@
-import Product from "./product.model.js"
-import { asyncWrapper } from "../../middleware/asyncWrapper.js";
-import AppError from "../../utils/errors/appError.js";
+import Product from "./product.model.js";
+import { asyncWrapper } from "../../../middleware/asyncWrapper.js";
+import AppError from "../../../utils/errors/appError.js";
 
 export const createProduct = asyncWrapper(async (req, res, next) => {
-const newProduct = new Product(req.body);
+  const newProduct = new Product(req.body);
   await newProduct.save().then((data) => {
-    res.status(201).json({ status: "SUCCESS", data: { product: data } });
+    res.status(201).json({
+      status: "SUCCESS",
+      message: "product created successfully",
+      data: { product: data },
+    });
   });
-})
+});
 
 export const getAllProducts = asyncWrapper(async (req, res, next) => {
-    let quary = req.query;
-  const limit = quary.limit || 6;
+  let quary = req.query;
+  const limit = quary.limit || 0;
   const page = quary.page || 1;
   const skip = (page - 1) * limit;
-  const data = await Product.find({}, { __v: false }).limit(limit).skip(skip);
+  const data = await Product.find(
+    { deleted: false },
+    { name: 1, price: 1, stockQuantity: 1, category: 1 }
+  )
+    .limit(limit)
+    .skip(skip);
   res.json({ status: "SUCCESS", data: { products: data } });
-})
+});
 
 export const getProductById = asyncWrapper(async (req, res, next) => {
-    const data = await Product.findById(req.params.productId, { __v: false });
+  const data = await Product.findOne(
+    { _id: req.params.productId, deleted: false },
+    { __v: false, deleted: false }
+  );
   if (data) {
     return res.json({ status: "SUCCESS", data: { product: data } });
   }
-   throw AppError.create("product not found", 400, "Fail");
-})
+  throw AppError.createError("product not found", 400, "Fail");
+});
 
 export const updateProductById = asyncWrapper(async (req, res, next) => {
-     if(Object.keys(req.body).length===0){
-    throw AppError.create("no data provided to update", 400, "Fail");
- }
+  if (Object.keys(req.body).length === 0 || !req.body) {
+    throw AppError.createError("no data provided to update", 400, "Fail");
+  }
+  const allowedFields = ["price", "stockQuantity", "description"];
+  let hasAllowedField = false;
+  const updates = {};
+  const product = await Product.findById({
+    _id: req.params.productId,
+    deleted: false,
+  });
+  allowedFields.forEach((field) => {
+    if (req.body[field] !== undefined) {
+      hasAllowedField = true;
+      if (req.body[field] !== product[field]) {
+        updates[field] = req.body[field];
+      }
+    }
+  });
+  if (!hasAllowedField) {
+    throw AppError.createError(
+      "no valid fields provided to update",
+      400,
+      "Fail"
+    );
+  }
+  if (Object.keys(updates).length === 0) {
+    throw AppError.createError(
+      "The provided data is identical to the current data",
+      400,
+      "Fail"
+    );
+  }
+
   const data = await Product.updateOne(
-    { _id: req.params.productId },
-    { $set: req.body }
+    { _id: req.params.productId, deleted: false },
+    { $set: updates }
   );
 
   if (data.matchedCount !== 0) {
-    return res.json({ status: "SUCCESS", data: data });
+    return res.json({ status: "SUCCESS", message: "updated successfully" });
   }
-  throw AppError.create("product not found", 404, "Fail");
-})
+  throw AppError.createError("product not found", 404, "Fail");
+});
 
 export const deleteProductById = asyncWrapper(async (req, res, next) => {
-    const data = await Product.deleteOne({ _id: req.params.productId });
-  if (data.deletedCount !== 0) {
-    return res.json({ status: "SUCCESS", data: null });
+  const data = await Product.findOneAndUpdate(
+    { _id: req.params.productId },
+    { $set: { deleted: true } }
+  );
+  if (data) {
+    return res.json({ status: "SUCCESS", message: "deleted successfully" });
   }
-  throw AppError.create("product not found", 404, "Fail");
-})
+  throw AppError.createError("product not found", 404, "Fail");
+});

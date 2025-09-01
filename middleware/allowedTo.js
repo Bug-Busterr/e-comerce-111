@@ -1,10 +1,10 @@
-import {UnAuthorizedError} from "../utils/errors/appError.js";
+import appError from "../utils/errors/appError.js";
 
-export const allowedTo = (...roles) => {
-    return (req, res, next) => {
-        if(!roles.includes(req.currentUser.role)) {
-            return next();
-        }
-        next(UnAuthorizedError);
+export const allowedTo= (role) => {
+  return (req, res, next) => {
+    if (role!==req.currentUser.role) {
+      return next(appError.createError("this role is not authorized", 401));
     }
-}
+    next();
+  };
+};

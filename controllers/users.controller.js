@@ -66,7 +66,7 @@ export const register = asyncWrapper(async (req, res, next) => {
       phone: user.phone,
       role: user.role,
       avatar: user.avatar,
-      token: generateToken(user.name, user.email, user.phone, user._id)
+      token: generateToken(user.name, user.email, user.phone, user._id,user.role)
     }
   });
 });
@@ -102,7 +102,7 @@ export const login = asyncWrapper(async (req, res, next) => {
     });
   }
 
-  const redirectTo = user.role === "admin" ? "/admin/dashboard" : "/store";
+  const redirectTo = user.role === "ADMIN" ? "/admin/dashboard" : "/store";
 
   res.status(SUCCESS).json({
     status: SUCCESS,
@@ -115,7 +115,7 @@ export const login = asyncWrapper(async (req, res, next) => {
       phone: user.phone,  
       role: user.role,
       avatar: user.avatar,
-      token: generateToken(user.name, user.email, user.phone, user._id)
+      token: generateToken(user.name, user.email, user.phone, user._id,user.role)
     }
   });
 });
