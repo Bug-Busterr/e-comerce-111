@@ -1,6 +1,6 @@
-import Product from "./product.model.js";
-import { asyncWrapper } from "../../../middleware/asyncWrapper.js";
-import AppError from "../../../utils/errors/appError.js";
+import Product from "../../models/Products/product.model.js";
+import { asyncWrapper } from "../../middleware/asyncWrapper.js";
+import AppError from "../../utils/errors/appError.js";
 
 export const createProduct = asyncWrapper(async (req, res, next) => {
   const newProduct = new Product(req.body);
