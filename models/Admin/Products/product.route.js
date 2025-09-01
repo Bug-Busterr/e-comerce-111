@@ -3,7 +3,7 @@ import multer from 'multer';
 const router = express.Router();
 import { protect } from "../../../middleware/authMiddleware.js";
 import { validate } from "../../../middleware/validate.js";
-import { productValidationSchema } from "../../../Validation/productSchema.js";
+import { productValidationSchema , productUpdateSchema} from "../../../Validation/productSchema.js";
 import { allowedTo } from "../../../middleware/allowedTo.js";
 import {
     createProduct,
@@ -17,7 +17,7 @@ import { userRoles } from "../../../utils/userRoles.js";
 router.get("/",getAllProducts );
 router.get("/:productId",getProductById );
 router.post("/",protect,allowedTo(userRoles.ADMIN),validate(productValidationSchema),createProduct);
-router.patch("/:productId",protect,allowedTo(userRoles.ADMIN), updateProductById);
+router.patch("/:productId",protect,allowedTo(userRoles.ADMIN),validate(productUpdateSchema), updateProductById);
 router.delete("/:productId",protect,allowedTo(userRoles.ADMIN), deleteProductById);
 
 export default router;

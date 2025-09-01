@@ -19,29 +19,27 @@ export const getAllProducts = asyncWrapper(async (req, res, next) => {
   const page = quary.page || 1;
   const skip = (page - 1) * limit;
 
-    let filter = { deleted: false };
+  let filter = { deleted: false };
   if (req.query.search) {
     const searchRegex = new RegExp(req.query.search, "i");
-    filter.$or = [
-      { name: searchRegex },
-      { category: searchRegex }
-    ];
+    filter.$or = [{ name: searchRegex }, { category: searchRegex }];
   }
 
-  
   let sort = {};
   if (req.query.sort) {
     const [field, order] = req.query.sort.split("_");
     sort[field] = order === "asc" ? 1 : -1;
   }
 
-
-  const data = await Product.find(
-    filter ,
-    { name: 1, price: 1, stockQuantity: 1, category: 1 }
-  )
+  const data = await Product.find(filter, {
+    name: 1,
+    price: 1,
+    stockQuantity: 1,
+    category: 1,
+  })
     .limit(limit)
-    .skip(skip).sort(sort);
+    .skip(skip)
+    .sort(sort);
   res.json({ status: "SUCCESS", data: { products: data } });
 });
 
@@ -57,31 +55,26 @@ export const getProductById = asyncWrapper(async (req, res, next) => {
 });
 
 export const updateProductById = asyncWrapper(async (req, res, next) => {
-  if (Object.keys(req.body).length === 0 || !req.body) {
-    throw AppError.createError("no data provided to update", 400, "Fail");
-  }
-  const allowedFields = ["price", "stockQuantity", "description"];
-  let hasAllowedField = false;
-  const updates = {};
-  const product = await Product.findById({
+  const product = await Product.findOne({
     _id: req.params.productId,
     deleted: false,
   });
-  allowedFields.forEach((field) => {
-    if (req.body[field] !== undefined) {
-      hasAllowedField = true;
-      if (req.body[field] !== product[field]) {
-        updates[field] = req.body[field];
-      }
+
+  if (!product) {
+    throw AppError.createError("product not found", 404, "Fail");
+  }
+
+  if (!req.body || Object.keys(req.body).length === 0) {
+    throw AppError.createError("no data provided to update", 400, "Fail");
+  }
+
+  const updates = {};
+  Object.keys(req.body).forEach((key) => {
+    if (req.body[key] !== product[key]) {
+      updates[key] = req.body[key];
     }
   });
-  if (!hasAllowedField) {
-    throw AppError.createError(
-      "no valid fields provided to update",
-      400,
-      "Fail"
-    );
-  }
+
   if (Object.keys(updates).length === 0) {
     throw AppError.createError(
       "The provided data is identical to the current data",
@@ -95,10 +88,7 @@ export const updateProductById = asyncWrapper(async (req, res, next) => {
     { $set: updates }
   );
 
-  if (data.matchedCount !== 0) {
-    return res.json({ status: "SUCCESS", message: "updated successfully" });
-  }
-  throw AppError.createError("product not found", 404, "Fail");
+  return res.json({ status: "SUCCESS", message: "updated successfully" });
 });
 
 export const deleteProductById = asyncWrapper(async (req, res, next) => {

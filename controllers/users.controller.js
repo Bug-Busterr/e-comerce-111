@@ -3,6 +3,8 @@ import User from '../models/user.model.js'
 import {SUCCESS , BAD_REQUEST} from "../utils/http_status_code.js";
 import bcrypt from "bcryptjs";
 import { generateToken } from "../services/jwt.service.js";
+import { userRoles } from "../utils/userRoles.js";
+import { NOT_FOUND,UNAUTHORIZED } from "../utils/http_status_code.js";
 
 export const getAllUsers = asyncWrapper(async (req,res) => {
     const query = req.query;
@@ -102,7 +104,7 @@ export const login = asyncWrapper(async (req, res, next) => {
     });
   }
 
-  const redirectTo = user.role === "ADMIN" ? "/admin/dashboard" : "/store";
+  const redirectTo = user.role === userRoles.ADMIN ? "/admin/dashboard" : "/store";
 
   res.status(SUCCESS).json({
     status: SUCCESS,
