@@ -1,15 +1,28 @@
 import Discount from "../../models/discount/discount.model.js";
 import { asyncWrapper } from "../../middleware/asyncWrapper.js";
+import { SUCCESS, NOT_FOUND, CREATED } from "../../utils/http_status_code.js";
 
 export const createDiscount = asyncWrapper(async (req, res) => {
+  if (req.body.code) {
+    req.body.code = req.body.code.toUpperCase();
+  }
+
   const discount = new Discount(req.body);
   await discount.save();
-  res.status(201).json({ status: "SUCCESS", data: discount });
+  res.status(CREATED).json({ 
+    status: "SUCCESS", 
+    message: "Discount created successfully",
+    data: { discount } 
+  });
 });
 
 export const getAllDiscounts = asyncWrapper(async (req, res) => {
   const discounts = await Discount.find({ isActive: true, inactive: false });
-  res.status(200).json({ status: "SUCCESS", data: discounts });
+  res.status(SUCCESS).json({ 
+    status: "SUCCESS", 
+    message: "Discounts retrieved successfully",
+    data: { discounts } 
+  });
 });
 
 export const getDiscountById = asyncWrapper(async (req, res) => {
@@ -20,16 +33,24 @@ export const getDiscountById = asyncWrapper(async (req, res) => {
   });
 
   if (!discount) {
-    return res.status(404).json({
-      status: "FAIL",
+    return res.status(NOT_FOUND).json({
+      status: "NOT FOUND",
       message: "Discount not found or inactive",
     });
   }
 
-  res.status(200).json({ status: "SUCCESS", data: discount });
+  res.status(SUCCESS).json({ 
+    status: "SUCCESS", 
+    message: "Discount retrieved successfully",
+    data: { discount } 
+  });
 });
 
 export const updateDiscount = asyncWrapper(async (req, res) => {
+  if (req.body.code) {
+    req.body.code = req.body.code.toUpperCase();
+  }
+
   const discount = await Discount.findOneAndUpdate(
     { _id: req.params.id, isActive: true, inactive: false },
     req.body,
@@ -37,13 +58,17 @@ export const updateDiscount = asyncWrapper(async (req, res) => {
   );
 
   if (!discount) {
-    return res.status(404).json({
-      status: "FAIL",
+    return res.status(NOT_FOUND).json({
+      status: NOT_FOUND,
       message: "Discount not found or inactive",
     });
   }
 
-  res.status(200).json({ status: "SUCCESS", data: discount });
+  res.status(SUCCESS).json({ 
+    status: "SUCCESS", 
+    message: "Discount updated successfully",
+    data: { discount } 
+  });
 });
 
 export const deleteDiscount = asyncWrapper(async (req, res) => {
@@ -59,13 +84,16 @@ export const deleteDiscount = asyncWrapper(async (req, res) => {
 
   if (!discount) {
     return res
-      .status(404)
-      .json({ status: "FAIL", message: "Discount not found" });
+      .status(NOT_FOUND)
+      .json({ 
+        status: "NOT FOUND", 
+        message: "Discount not found" 
+      });
   }
 
-  res.status(200).json({
+  res.status(SUCCESS).json({
     status: "SUCCESS",
     message: "Discount soft-deleted (inactive for 3 days)",
-    data: discount,
+    data: { discount },
   });
 });

@@ -5,17 +5,25 @@ import {
   getDiscountById,
   updateDiscount,
   deleteDiscount,
-} from "../../../controllers/Admin/discount/discount.controller.js";
+} from "../../controllers/discount/discount.controller.js";
+import { validate } from "../../middleware/validate.js";
+import { CreateDiscountSchema, UpdateDiscountSchema } from "../../Validation/discountValidation.js";
+import { protect } from "../../middleware/authMiddleware.js";
+import { allowedTo } from "../../middleware/allowedTo.js";
+import { userRoles } from "../../utils/userRoles.js";
 
 const router = express.Router();
 
-router.post("/", createDiscount);
+router.use(protect);
+router.use(allowedTo(userRoles.ADMIN));
+
+router.post("/", validate(CreateDiscountSchema), createDiscount);
 
 router.get("/", getAllDiscounts);
 
 router.get("/:id", getDiscountById);
 
-router.put("/:id", updateDiscount);
+router.put("/:id", validate(UpdateDiscountSchema), updateDiscount);
 
 router.delete("/:id", deleteDiscount);
 

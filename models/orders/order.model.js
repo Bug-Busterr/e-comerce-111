@@ -25,6 +25,18 @@ const orderSchema = new mongoose.Schema({
     enum: ["Pending", "Shipped", "Delivered", "Canceled"],
     default: "Pending"
   },
+  discountCode: {
+    type: String,
+    default: null
+  },
+  discountAmount: {
+    type: Number,
+    default: 0
+  },
+  originalAmount: {
+    type: Number,
+    required: true
+  },
   totalAmount: { type: Number, required: true },
   deleted: { type: Boolean, default: false }
 }, {
