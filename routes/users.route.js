@@ -11,7 +11,7 @@ import {
     userProfile,
     forgetPassword
 } from "../controllers/users.controller.js";
-import { validate } from "../middleware/validat.js";
+import { validate } from "../middleware/validate.js";
 import { SignUpSchema } from "../middleware/validationSchema.js";
 
 const diskStorage = multer.diskStorage({
