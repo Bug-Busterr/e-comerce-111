@@ -21,10 +21,13 @@ const productSchema = new mongoose.Schema({
         type: String,
         enum: ['Phones', 'Computers', 'SmartWatch', 'Camera', 'HeadPhones', 'Gaming',]
     },
-        images: {   
-        type:String,
-        default:""
-    },
+       images: [
+  {
+    url: {
+      type: String
+    }
+  }
+],
     deleted:{
         type: Boolean,
         default:false

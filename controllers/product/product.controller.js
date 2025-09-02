@@ -93,7 +93,7 @@ export const updateProductById = asyncWrapper(async (req, res, next) => {
 
 export const deleteProductById = asyncWrapper(async (req, res, next) => {
   const data = await Product.findOneAndUpdate(
-    { _id: req.params.productId },
+    { _id: req.params.productId ,deleted: false},
     { $set: { deleted: true } }
   );
   if (data) {

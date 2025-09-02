@@ -10,12 +10,12 @@ import { userRoles } from "../../utils/userRoles.js";
 const router = express.Router();
 
 router.route('/')
-         .get(getAllOrders)
+         .get(protect,allowedTo(userRoles.ADMIN),getAllOrders)
          .post(protect , validate(CreateOrderSchema), createOrder)
 
 router.route('/:id')
          .get(getOrderById)
-         .patch(protect, allowedTo(userRoles.ADMIN) , validate(UpdateOrderSchema), updateOrder)
-         .delete(protect, allowedTo(userRoles.ADMIN) , deleteOrder)
+         .patch(protect, validate(UpdateOrderSchema), updateOrder)
+         .delete(protect, deleteOrder)
 
 export default router;
