@@ -24,14 +24,14 @@ export const productValidationSchema = Joi.object({
   category: Joi.string().required().messages({
     'string.empty': 'Category is required',
   }),
-  // images: Joi.array().items(
-  //   Joi.object({
-  //     url: Joi.string().uri().messages({
-  //       'string.empty': 'Image URL is required',
-  //       'string.uri': 'Image URL must be valid',
-  //     })
-  //   })
-  // )
+  images: Joi.array().items(
+    Joi.object({
+      url: Joi.string().uri().messages({
+        'string.empty': 'Image URL is required',
+        'string.uri': 'Image URL must be valid',
+      })
+    })
+  )
 });
 
 export const productUpdateSchema = Joi.object({
