@@ -71,6 +71,11 @@ export const CreateOrderSchema = Joi.object({
         "any.only": "Status must be one of: Pending, Shipped, Delivered, Canceled",
         "string.base": "Status must be a string",
     }),
+    discountCode: Joi.string().min(3).max(20).messages({
+        "string.base": "Discount code must be a string",
+        "string.min": "Discount code must be at least 3 characters",
+        "string.max": "Discount code must be less than 20 characters",
+    }),
 });
 
 export const UpdateOrderSchema = Joi.object({

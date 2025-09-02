@@ -14,6 +14,7 @@ import { SignUpSchema } from "../Validation/validationSchema.js";
 
 const router = express.Router();
 
+
 const diskStorage = multer.diskStorage({
     destination: (req, file, cb) => cb(null , 'uploads'),
     filename: (req , file , cb) =>{

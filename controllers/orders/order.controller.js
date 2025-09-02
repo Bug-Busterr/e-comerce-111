@@ -2,6 +2,7 @@ import { asyncWrapper } from '../../middleware/asyncWrapper.js';
 import Users from '../../models/user.model.js';
 import Orders from "../../models/orders/order.model.js";
 import Products from "../../models/Products/product.model.js";
+import { DiscountService } from '../../services/discount.service.js';
 import { SUCCESS , BAD_REQUEST , NOT_FOUND} from '../../utils/http_status_code.js';
 import mongoose from 'mongoose';
 
@@ -65,7 +66,7 @@ export const getOrderById = asyncWrapper(async (req , res) => {
 });
 
 export const createOrder = asyncWrapper(async (req , res) => {
-    const { buyerId, products, productShippingDetails } = req.body;
+    const { buyerId, products, productShippingDetails, discountCode } = req.body;
 
     const buyer = await Users.findById(buyerId);
     
@@ -76,8 +77,7 @@ export const createOrder = asyncWrapper(async (req , res) => {
         });
     }
 
-    // Validate products exist and calculate total amount
-    let totalAmount = 0;
+    let originalAmount = 0;
     const validatedProducts = [];
 
     for (const item of products) {
@@ -102,14 +102,36 @@ export const createOrder = asyncWrapper(async (req , res) => {
             quantity: item.quantity
         });
 
-        totalAmount += product.price * item.quantity;
+        originalAmount += product.price * item.quantity;
+    }
+
+    let discountAmount = 0;
+    let finalAmount = originalAmount;
+    let appliedDiscountCode = null;
+
+    if (discountCode) {
+        const discountResult = await DiscountService.validateAndApplyDiscount(discountCode, originalAmount);
+        
+        if (!discountResult.isValid) {
+            return res.status(BAD_REQUEST).json({
+                status: BAD_REQUEST,
+                message: discountResult.error
+            });
+        }
+
+        discountAmount = discountResult.discountAmount;
+        finalAmount = discountResult.finalAmount;
+        appliedDiscountCode = discountCode.toUpperCase();
     }
 
     const order = new Orders({
       buyer: buyerId,
       products: validatedProducts,
       productShippingDetails,
-      totalAmount,
+      originalAmount,
+      discountCode: appliedDiscountCode,
+      discountAmount,
+      totalAmount: finalAmount,
       status: "Pending"
     });
 
@@ -163,8 +185,7 @@ export const updateOrder = asyncWrapper(async (req , res) => {
     }
 
     if (products) {
-        // Validate products exist and calculate new total amount
-        let newTotalAmount = 0;
+        let newOriginalAmount = 0;
         const validatedProducts = [];
 
         for (const item of products) {
@@ -189,11 +210,28 @@ export const updateOrder = asyncWrapper(async (req , res) => {
                 quantity: item.quantity
             });
 
-            newTotalAmount += product.price * item.quantity;
+            newOriginalAmount += product.price * item.quantity;
+        }
+
+        if (order.discountCode) {
+            const discountResult = await DiscountService.validateAndApplyDiscount(order.discountCode, newOriginalAmount);
+            
+            if (discountResult.isValid) {
+                order.originalAmount = newOriginalAmount;
+                order.discountAmount = discountResult.discountAmount;
+                order.totalAmount = discountResult.finalAmount;
+            } else {
+                order.originalAmount = newOriginalAmount;
+                order.discountCode = null;
+                order.discountAmount = 0;
+                order.totalAmount = newOriginalAmount;
+            }
+        } else {
+            order.originalAmount = newOriginalAmount;
+            order.totalAmount = newOriginalAmount;
         }
 
         order.products = validatedProducts;
-        order.totalAmount = newTotalAmount;
     }
 
     if (productShippingDetails) {
@@ -232,5 +270,90 @@ export const deleteOrder = asyncWrapper(async (req , res) => {
     res.status(SUCCESS).json({ 
         status: "SUCCESS", 
         message: "Order deleted successfully" 
+    });
+});
+
+export const validateDiscountCode = asyncWrapper(async (req, res) => {
+    const { discountCode } = req.body;
+
+    if (!discountCode) {
+        return res.status(BAD_REQUEST).json({
+            status: BAD_REQUEST,
+            message: "Discount code is required"
+        });
+    }
+
+    const result = await DiscountService.validateDiscountCode(discountCode);
+
+    if (!result.isValid) {
+        return res.status(BAD_REQUEST).json({
+            status: BAD_REQUEST,
+            message: result.message
+        });
+    }
+
+    res.status(SUCCESS).json({
+        status: "SUCCESS",
+        message: result.message,
+        data: { discount: result.discount }
+    });
+});
+
+export const previewDiscount = asyncWrapper(async (req, res) => {
+    const { products, discountCode } = req.body;
+
+    if (!products || !Array.isArray(products) || products.length === 0) {
+        return res.status(BAD_REQUEST).json({
+            status: BAD_REQUEST,
+            message: "Products array is required"
+        });
+    }
+
+    let originalAmount = 0;
+
+    for (const item of products) {
+        const product = await Products.findById(item.product);
+        
+        if (!product) {
+            return res.status(BAD_REQUEST).json({ 
+                status: BAD_REQUEST, 
+                message: `Product with ID ${item.product} not found` 
+            });
+        }
+
+        originalAmount += product.price * item.quantity;
+    }
+
+    let discountInfo = {
+        originalAmount,
+        discountAmount: 0,
+        finalAmount: originalAmount,
+        discountApplied: false
+    };
+
+    if (discountCode) {
+        const discountResult = await DiscountService.validateAndApplyDiscount(discountCode, originalAmount);
+        
+        if (discountResult.isValid) {
+            discountInfo = {
+                originalAmount,
+                discountAmount: discountResult.discountAmount,
+                finalAmount: discountResult.finalAmount,
+                discountApplied: true,
+                discountPercentage: discountResult.discountPercentage,
+                discountCode: discountCode.toUpperCase()
+            };
+        } else {
+            return res.status(BAD_REQUEST).json({
+                status: BAD_REQUEST,
+                message: discountResult.error
+            });
+        }
+    }
+
+    res.status(SUCCESS).json({
+        status: "SUCCESS",
+        message: "Discount preview calculated",
+        data: discountInfo
     });
 });
