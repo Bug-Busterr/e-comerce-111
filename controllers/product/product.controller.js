@@ -44,14 +44,31 @@ export const getAllProducts = asyncWrapper(async (req, res, next) => {
 });
 
 export const getProductById = asyncWrapper(async (req, res, next) => {
-  const data = await Product.findOne(
-    { _id: req.params.productId, deleted: false },
-    { __v: false, deleted: false }
-  );
-  if (data) {
-    return res.json({ status: "SUCCESS", data: { product: data } });
+  const { productId } = req.params;
+
+  if (!productId.match(/^[0-9a-fA-F]{24}$/)) {
+    throw AppError.createError("Invalid product ID", 400, "Fail");
   }
-  throw AppError.createError("product not found", 400, "Fail");
+
+  const product = await Product.findOne({ _id: productId, deleted: false });
+
+  if (!product) {
+    throw AppError.createError("Product not found", 404, "Fail");
+  }
+
+  res.json({ status: "SUCCESS", data: { product } });
+});
+
+// جلب المنتجات حسب categoryId
+export const getProductsByCategory = asyncWrapper(async (req, res, next) => {
+  const { categoryId } = req.params;
+
+  if (!categoryId.match(/^[0-9a-fA-F]{24}$/)) {
+    throw AppError.createError("Invalid category ID", 400, "Fail");
+  }
+
+  const products = await Product.find({ category: categoryId, deleted: false });
+  res.json({ status: "success", data: products });
 });
 
 export const updateProductById = asyncWrapper(async (req, res, next) => {
@@ -83,7 +100,7 @@ export const updateProductById = asyncWrapper(async (req, res, next) => {
     );
   }
 
-  const data = await Product.updateOne(
+  await Product.updateOne(
     { _id: req.params.productId, deleted: false },
     { $set: updates }
   );
