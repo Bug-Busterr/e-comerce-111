@@ -1,8 +1,6 @@
 import express from "express";
 import multer from 'multer';
-const router = express.Router();
 import AppError from "../utils/errors/appError.js"
-
 import {
     getAllUsers,
     register,
@@ -12,7 +10,10 @@ import {
     forgetPassword
 } from "../controllers/users.controller.js";
 import { validate } from "../middleware/validate.js";
-import { SignUpSchema } from "../middleware/validationSchema.js";
+import { SignUpSchema } from "../Validation/validationSchema.js";
+
+const router = express.Router();
+
 
 const diskStorage = multer.diskStorage({
     destination: (req, file, cb) => cb(null , 'uploads'),
@@ -28,7 +29,7 @@ const fileFilter = (req, file, cb) => {
     if(imageType === 'image') {
         return cb(null, true)
     } else {
-        return cb(AppError.createError({message: 'file must be an image' , status: 400}), false)
+        return cb(AppError.createError('file must be an image', 400 , "Fail"), false)
     }
 }
 
