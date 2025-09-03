@@ -14,11 +14,11 @@ router.post('/validate-discount', validate(ValidateDiscountCodeSchema), validate
 router.post('/preview-discount', validate(PreviewDiscountSchema), previewDiscount)
 
 router.route('/')
-         .get(getAllOrders)
-         .post(protect , validate(CreateOrderSchema), createOrder)
+         .get(protect,allowedTo(userRoles.ADMIN),getAllOrders)
+         .post(protect,allowedTo(userRoles.USER) , validate(CreateOrderSchema), createOrder)
 
 router.route('/:id')
-         .get(getOrderById)
+         .get(protect,getOrderById)
          .patch(protect, allowedTo(userRoles.ADMIN) , validate(UpdateOrderSchema), updateOrder)
          .delete(protect, allowedTo(userRoles.ADMIN) , deleteOrder)
 
