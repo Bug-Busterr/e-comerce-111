@@ -31,6 +31,25 @@ export const SignUpSchema = Joi.object({
     }),
 });
 
+export const updatePasswordSchema = Joi.object({
+      currentPassword: Joi.string().min(6).max(128).required().messages({
+        "string.min": "currentPassword must be at least 6 characters",
+        "string.max": "currentPassword must be less than or equal to 128 characters",
+        "any.required": "currentPassword is required",
+    }),
+    newPassword: Joi.string().min(6).max(128).required().messages({
+        "string.min": "newPassword must be at least 6 characters",
+        "string.max": "newPassword must be less than or equal to 128 characters",
+        "any.required": "newPassword is required",
+    }),
+      confirmPassword: Joi.string().min(6).max(128).required().messages({
+        "string.min": "confirmPassword must be at least 6 characters",
+        "string.max": "confirmPassword must be less than or equal to 128 characters",
+        "any.required": "confirmPassword is required",
+    })
+
+});
+
 export const CreateOrderSchema = Joi.object({
     buyerId: objectId.required().messages({
         "any.required": "Buyer ID is required",
@@ -70,6 +89,11 @@ export const CreateOrderSchema = Joi.object({
     status: Joi.string().valid("Pending", "Shipped", "Delivered", "Canceled").messages({
         "any.only": "Status must be one of: Pending, Shipped, Delivered, Canceled",
         "string.base": "Status must be a string",
+    }),
+    discountCode: Joi.string().min(3).max(20).messages({
+        "string.base": "Discount code must be a string",
+        "string.min": "Discount code must be at least 3 characters",
+        "string.max": "Discount code must be less than 20 characters",
     }),
 });
 
