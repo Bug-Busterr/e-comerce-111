@@ -6,13 +6,15 @@ export async function connectToDataBase(){
     const options = {
         serverSelectionTimeoutMS: 30000, // 30 seconds
         socketTimeoutMS: 45000, // 45 seconds
-        bufferMaxEntries: 0,
         maxPoolSize: 10,
         minPoolSize: 5,
         maxIdleTimeMS: 30000,
         retryWrites: true,
         w: 'majority'
     };
+
+    // Set mongoose-specific options (only valid ones)
+    mongoose.set('bufferCommands', false);
 
     try{
         await mongoose.connect(URL, options);
