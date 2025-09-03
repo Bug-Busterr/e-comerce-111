@@ -29,10 +29,13 @@ const productSchema = new mongoose.Schema({
         ref: "Category",
         required: true
     },
-    images: {
-        type: [String],   
-        default: []
-    },
+    images: [
+    {
+        url: {
+            type: String
+        }
+    }
+    ],
     deleted: {
         type: Boolean,
         default: false
