@@ -44,7 +44,7 @@ const upload = multer({
   fileFilter,
 });
 
-router.get('/', getAllUsers);
+router.get('/',protect,allowedTo(userRoles.USER), getAllUsers);
 
 router.post("/register" , validate(SignUpSchema), upload.single("avatar"), register);
 
