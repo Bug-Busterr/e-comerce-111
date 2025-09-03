@@ -59,7 +59,6 @@ export const getProductById = asyncWrapper(async (req, res, next) => {
   res.json({ status: "SUCCESS", data: { product } });
 });
 
-// جلب المنتجات حسب categoryId
 export const getProductsByCategory = asyncWrapper(async (req, res, next) => {
   const { categoryId } = req.params;
 
