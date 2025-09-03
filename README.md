@@ -31,9 +31,9 @@ A comprehensive RESTful API for e-commerce applications built with Node.js, Expr
 
 ## 📋 Table of Contents
 
-- [Installation](#installation)
-- [Environment Setup](#environment-setup)
-- [API Documentation](#api-documentation)
+- [🛠 Installation](#-installation)
+- [🌍 Environment Setup](#-environment-setup)
+- [📚 API Documentation](#-api-documentation)
   - [Authentication](#authentication)
   - [Users](#users)
   - [Products](#products)
@@ -43,9 +43,9 @@ A comprehensive RESTful API for e-commerce applications built with Node.js, Expr
   - [Categories](#categories)
   - [Wishlist](#wishlist)
   - [Upload](#upload)
-- [Database Schema](#database-schema)
-- [Deployment](#deployment)
-- [Contributing](#contributing)
+- [🗄️ Database Schema](#️-database-schema)
+- [🚀 Deployment](#-deployment)
+- [🤝 Contributing](#-contributing)
 
 ## 🛠 Installation
 
@@ -58,22 +58,26 @@ A comprehensive RESTful API for e-commerce applications built with Node.js, Expr
 ### Setup
 
 1. **Clone the repository**
+
    ```bash
    git clone https://github.com/Bug-Busterr/e-comerce-111
    cd E-Commerce-Api
    ```
 
 2. **Install dependencies**
+
    ```bash
    npm install
    ```
 
 3. **Create environment file**
+
    ```bash
    cp .env.example .env
    ```
 
 4. **Configure environment variables**
+
    ```env
    # Server Configuration
    PORT=3000
@@ -92,6 +96,7 @@ A comprehensive RESTful API for e-commerce applications built with Node.js, Expr
    ```
 
 5. **Start the server**
+
    ```bash
    # Development
    npm run run:dev
@@ -118,7 +123,7 @@ A comprehensive RESTful API for e-commerce applications built with Node.js, Expr
 
 ### Base URL
 
-```
+```text
 Development: http://localhost:3000/api
 Production: https://e-comerce-111.vercel.app/api
 ```
@@ -126,7 +131,8 @@ Production: https://e-comerce-111.vercel.app/api
 ### Authentication
 
 All authenticated endpoints require a Bearer token in the Authorization header:
-```
+
+```text
 Authorization: Bearer <your-jwt-token>
 ```
 
@@ -159,18 +165,21 @@ POST /auth/login
 ### Users
 
 #### Get All Users
+
 ```http
 GET /auth?limit=10&page=1
 Authorization: Bearer <token>
 ```
 
 #### Get User Profile
+
 ```http
 GET /auth/me
 Authorization: Bearer <token>
 ```
 
 #### Update Password
+
 ```http
 POST /auth/updatePassword
 Authorization: Bearer <token>
@@ -183,6 +192,7 @@ Authorization: Bearer <token>
 ```
 
 #### Forgot Password
+
 ```http
 PATCH /auth/forgotPassword
 
@@ -196,21 +206,25 @@ PATCH /auth/forgotPassword
 ### Products
 
 #### Get All Products
+
 ```http
 GET /auth/admin/products?limit=10&page=1&search=laptop&sort=price_asc
 ```
 
 #### Get Product by ID
+
 ```http
 GET /auth/admin/products/{productId}
 ```
 
 #### Get Products by Category
+
 ```http
 GET /auth/admin/products/category/{categoryId}
 ```
 
 #### Create Product (Admin Only)
+
 ```http
 POST /auth/admin/products
 Authorization: Bearer <admin-token>
@@ -226,6 +240,7 @@ Authorization: Bearer <admin-token>
 ```
 
 #### Update Product (Admin Only)
+
 ```http
 PATCH /auth/admin/products/{productId}
 Authorization: Bearer <admin-token>
@@ -238,6 +253,7 @@ Authorization: Bearer <admin-token>
 ```
 
 #### Delete Product (Admin Only)
+
 ```http
 DELETE /auth/admin/products/{productId}
 Authorization: Bearer <admin-token>
@@ -246,18 +262,21 @@ Authorization: Bearer <admin-token>
 ### Orders
 
 #### Get All Orders (Admin Only)
+
 ```http
 GET /auth/admin/orders?limit=10&page=1&status=Pending&search=john
 Authorization: Bearer <admin-token>
 ```
 
 #### Get Order by ID
+
 ```http
 GET /auth/admin/orders/{orderId}
 Authorization: Bearer <token>
 ```
 
 #### Create Order
+
 ```http
 POST /auth/admin/orders
 Authorization: Bearer <token>
@@ -279,6 +298,7 @@ Authorization: Bearer <token>
 ```
 
 #### Update Order (Admin Only)
+
 ```http
 PATCH /auth/admin/orders/{orderId}
 Authorization: Bearer <admin-token>
@@ -295,12 +315,14 @@ Authorization: Bearer <admin-token>
 ```
 
 #### Delete Order (Admin Only)
+
 ```http
 DELETE /auth/admin/orders/{orderId}
 Authorization: Bearer <admin-token>
 ```
 
 #### Validate Discount Code
+
 ```http
 POST /auth/admin/orders/validate-discount
 
@@ -310,6 +332,7 @@ POST /auth/admin/orders/validate-discount
 ```
 
 #### Preview Discount
+
 ```http
 POST /auth/admin/orders/preview-discount
 
@@ -327,12 +350,14 @@ POST /auth/admin/orders/preview-discount
 ### Cart
 
 #### Get Cart
+
 ```http
 GET /cart
 Authorization: Bearer <token>
 ```
 
 #### Add to Cart
+
 ```http
 POST /cart
 Authorization: Bearer <token>
@@ -344,6 +369,7 @@ Authorization: Bearer <token>
 ```
 
 #### Update Cart Item
+
 ```http
 PUT /cart
 Authorization: Bearer <token>
@@ -355,12 +381,14 @@ Authorization: Bearer <token>
 ```
 
 #### Remove Item from Cart
+
 ```http
 DELETE /cart/item/{productId}
 Authorization: Bearer <token>
 ```
 
 #### Clear Cart
+
 ```http
 DELETE /cart
 Authorization: Bearer <token>
@@ -369,18 +397,21 @@ Authorization: Bearer <token>
 ### Discounts
 
 #### Get All Discounts (Admin Only)
+
 ```http
 GET /auth/admin/discounts
 Authorization: Bearer <admin-token>
 ```
 
 #### Get Discount by ID (Admin Only)
+
 ```http
 GET /auth/admin/discounts/{discountId}
 Authorization: Bearer <admin-token>
 ```
 
 #### Create Discount (Admin Only)
+
 ```http
 POST /auth/admin/discounts
 Authorization: Bearer <admin-token>
@@ -395,6 +426,7 @@ Authorization: Bearer <admin-token>
 ```
 
 #### Update Discount (Admin Only)
+
 ```http
 PUT /auth/admin/discounts/{discountId}
 Authorization: Bearer <admin-token>
@@ -406,6 +438,7 @@ Authorization: Bearer <admin-token>
 ```
 
 #### Delete Discount (Admin Only)
+
 ```http
 DELETE /auth/admin/discounts/{discountId}
 Authorization: Bearer <admin-token>
@@ -414,16 +447,19 @@ Authorization: Bearer <admin-token>
 ### Categories
 
 #### Get All Categories
+
 ```http
 GET /auth/admin/categories
 ```
 
 #### Get Category by ID
+
 ```http
 GET /auth/admin/categories/{categoryId}
 ```
 
 #### Create Category (Admin Only)
+
 ```http
 POST /auth/admin/categories
 
@@ -434,6 +470,7 @@ POST /auth/admin/categories
 ```
 
 #### Update Category (Admin Only)
+
 ```http
 PUT /auth/admin/categories/{categoryId}
 
@@ -444,6 +481,7 @@ PUT /auth/admin/categories/{categoryId}
 ```
 
 #### Delete Category (Admin Only)
+
 ```http
 DELETE /auth/admin/categories/{categoryId}
 ```
@@ -451,18 +489,21 @@ DELETE /auth/admin/categories/{categoryId}
 ### Wishlist
 
 #### Get Wishlist
+
 ```http
 GET /wishlists
 Authorization: Bearer <token>
 ```
 
 #### Add to Wishlist
+
 ```http
 GET /wishlists/{productId}
 Authorization: Bearer <token>
 ```
 
 #### Remove from Wishlist
+
 ```http
 DELETE /wishlists/{productId}
 Authorization: Bearer <token>
@@ -471,6 +512,7 @@ Authorization: Bearer <token>
 ### Upload
 
 #### Upload Image (Admin Only)
+
 ```http
 POST /auth/admin/uploads
 Authorization: Bearer <admin-token>
@@ -484,6 +526,7 @@ Content-Type: multipart/form-data
 ## 🗄️ Database Schema
 
 ### User Model
+
 ```javascript
 {
   name: String (required),
@@ -497,6 +540,7 @@ Content-Type: multipart/form-data
 ```
 
 ### Product Model
+
 ```javascript
 {
   name: String (required),
@@ -512,6 +556,7 @@ Content-Type: multipart/form-data
 ```
 
 ### Order Model
+
 ```javascript
 {
   buyer: ObjectId (ref: User, required),
@@ -534,6 +579,7 @@ Content-Type: multipart/form-data
 ```
 
 ### Cart Model
+
 ```javascript
 {
   buyer: ObjectId (ref: User, required, unique),
@@ -548,6 +594,7 @@ Content-Type: multipart/form-data
 ```
 
 ### Discount Model
+
 ```javascript
 {
   code: String (required, unique),
@@ -562,6 +609,7 @@ Content-Type: multipart/form-data
 ```
 
 ### Category Model
+
 ```javascript
 {
   name: String (required, unique),
@@ -572,6 +620,7 @@ Content-Type: multipart/form-data
 ```
 
 ### Wishlist Model
+
 ```javascript
 {
   user: ObjectId (ref: User, required),
@@ -604,16 +653,19 @@ The application is configured for deployment on Vercel with the following config
 ### Deployment Steps
 
 1. **Install Vercel CLI**
+
    ```bash
    npm install -g vercel
    ```
 
 2. **Login to Vercel**
+
    ```bash
    vercel login
    ```
 
 3. **Deploy**
+
    ```bash
    vercel --prod
    ```
@@ -637,6 +689,7 @@ The application is configured for deployment on Vercel with the following config
 ## 📊 API Response Format
 
 ### Success Response
+
 ```json
 {
   "status": "SUCCESS",
@@ -648,6 +701,7 @@ The application is configured for deployment on Vercel with the following config
 ```
 
 ### Error Response
+
 ```json
 {
   "status": "error",
@@ -657,6 +711,7 @@ The application is configured for deployment on Vercel with the following config
 ```
 
 ### Validation Error Response
+
 ```json
 [
   {
@@ -743,6 +798,7 @@ The API implements comprehensive error handling:
 ## 📞 Support
 
 For support and questions:
+
 - Create an issue in the repository
 - Contact the development team
 - Check the documentation for common solutions
@@ -756,6 +812,7 @@ This project is licensed under the ISC License.
 ## 🎯 Getting Started Quick Guide
 
 1. **Clone & Install**
+
    ```bash
    git clone <repo-url>
    cd E-Commerce-Api
@@ -763,17 +820,20 @@ This project is licensed under the ISC License.
    ```
 
 2. **Environment Setup**
+
    ```bash
    cp .env.example .env
    # Edit .env with your configurations
    ```
 
 3. **Start Development**
+
    ```bash
    npm run run:dev
    ```
 
 4. **Test API**
+
    ```bash
    curl http://localhost:3000/api/auth/admin/products
    ```
