@@ -13,13 +13,11 @@ const router = express.Router();
 router.post('/validate-discount', validate(ValidateDiscountCodeSchema), validateDiscountCode)
 router.post('/preview-discount', validate(PreviewDiscountSchema), previewDiscount)
 
-router.route('/')
-         .get(protect,allowedTo(userRoles.ADMIN),getAllOrders)
-         .post(protect,allowedTo(userRoles.USER) , validate(CreateOrderSchema), createOrder)
+router.get('/', protect,allowedTo(userRoles.ADMIN),getAllOrders)
+router.post('/' , protect,allowedTo(userRoles.USER) , validate(CreateOrderSchema), createOrder)
 
-router.route('/:id')
-         .get(protect,getOrderById)
-         .patch(protect, allowedTo(userRoles.ADMIN) , validate(UpdateOrderSchema), updateOrder)
-         .delete(protect, allowedTo(userRoles.ADMIN) , deleteOrder)
+router.get('/:id', protect,getOrderById)
+router.patch('/:id', protect, allowedTo(userRoles.ADMIN) , validate(UpdateOrderSchema), updateOrder)
+router.delete('/:id', protect, allowedTo(userRoles.ADMIN) , deleteOrder)
 
 export default router;

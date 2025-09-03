@@ -17,13 +17,10 @@ const router = express.Router();
 router.use(protect);
 router.use(allowedTo(userRoles.USER));
 
-router.route('/')
-    .get(getCart)                                    
-    .post(validate(AddToCartSchema), addToCart)     
-    .put(validate(UpdateCartItemSchema), updateCartItem) 
-    .delete(clearCart); 
-
-router.route('/item/:productId')
-    .delete(removeFromCart);         
+router.get('/' , getCart)                           
+router.post('/' , validate(AddToCartSchema), addToCart)     
+router.put('/' , validate(UpdateCartItemSchema), updateCartItem) 
+router.delete('/' , clearCart); 
+router.delete('/item/:productId' , removeFromCart);         
 
 export default router;

@@ -44,23 +44,18 @@ const upload = multer({
   fileFilter,
 });
 
-router.route("/").get(getAllUsers);
+router.get('/', getAllUsers);
 
-router
-  .route("/register")
-  .post(validate(SignUpSchema), upload.single("avatar"), register);
+router.post("/register" , validate(SignUpSchema), upload.single("avatar"), register);
 
-router.route("/login")
-      .post(login);
+router.post("/login", login);
 
-router.route("/forgotPassword")
-      .patch(forgetPassword);
+router.patch("/forgotPassword", forgetPassword);
 
-router.route("/me")
-      .patch(protect, allowedTo(userRoles.USER), userProfile);
+router.patch("/me", protect, allowedTo(userRoles.USER), userProfile);
 
-router
-  .route("/updatePassword")
-  .post(protect,allowedTo(userRoles.USER),validate(updatePasswordSchema),updatePassword);
+router.patch('/me', protect, allowedTo(userRoles.USER), userProfile);
+
+router.post('/updatePassword', protect, allowedTo(userRoles.USER), validate(updatePasswordSchema), updatePassword);
 
 export default router;
