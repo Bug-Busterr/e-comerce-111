@@ -54,8 +54,6 @@ router.patch("/forgotPassword", forgetPassword);
 
 router.patch("/me", protect, allowedTo(userRoles.USER), userProfile);
 
-router.patch('/me', protect, allowedTo(userRoles.USER), userProfile);
-
 router.post('/updatePassword', protect, allowedTo(userRoles.USER), validate(updatePasswordSchema), updatePassword);
 
 export default router;

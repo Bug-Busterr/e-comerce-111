@@ -34,7 +34,7 @@ const cartSchema = new mongoose.Schema({
   timestamps: true
 });
 
-cartSchema.index({ buyer: 1 });
+// Only add the items.product index since buyer already has unique constraint
 cartSchema.index({ "items.product": 1 });
 
 cartSchema.methods.calculateTotalPrice = async function() {

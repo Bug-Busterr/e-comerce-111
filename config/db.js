@@ -2,11 +2,39 @@ import mongoose from "mongoose";
 
 export async function connectToDataBase(){
     const URL = process.env.MONGODB_URL;
+    
+    const options = {
+        serverSelectionTimeoutMS: 30000, // 30 seconds
+        socketTimeoutMS: 45000, // 45 seconds
+        maxPoolSize: 10,
+        minPoolSize: 5,
+        maxIdleTimeMS: 30000,
+        retryWrites: true,
+        w: 'majority'
+    };
+
+    // Set mongoose-specific options (only valid ones)
+    mongoose.set('bufferCommands', false);
+
     try{
-        await mongoose.connect(URL);
+        await mongoose.connect(URL, options);
         console.log('DataBase Connected Successfully');
-    }
-    catch (err){
+        
+        // Handle connection events
+        mongoose.connection.on('error', (err) => {
+            console.error('MongoDB connection error:', err);
+        });
+        
+        mongoose.connection.on('disconnected', () => {
+            console.log('MongoDB disconnected');
+        });
+        
+        mongoose.connection.on('reconnected', () => {
+            console.log('MongoDB reconnected');
+        });
+        
+    } catch (err) {
+        console.error('Failed to connect to MongoDB:', err);
         throw err;
     }
 }
@@ -14,8 +42,9 @@ export async function connectToDataBase(){
 export async function disconnectFromDataBase(){
     try{
         await mongoose.connection.close();
-    }
-    catch(err){
+        console.log('Database disconnected successfully');
+    } catch(err) {
+        console.error('Error disconnecting from database:', err);
         throw err;
     }
 }
