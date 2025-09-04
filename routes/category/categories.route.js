@@ -7,6 +7,9 @@ import {
   deleteCategory,
 } from "../../controllers/category/category.controller.js";
 import { categorySchema } from "../../Validation/categorySchema.js";
+import {protect} from "../../middleware/authMiddleware.js";
+import {allowedTo} from "../../middleware/allowedTo.js"
+import { userRoles } from "../../utils/userRoles.js";
 
 const router = express.Router();
 
@@ -17,10 +20,10 @@ const validateBody = (schema) => (req, res, next) => {
   next();
 };
 
-router.post("/", validateBody(categorySchema), createCategory);
-router.get("/", getAllCategories);
-router.get("/:id", getCategoryById);
-router.put("/:id", validateBody(categorySchema), updateCategory);
-router.delete("/:id", deleteCategory); 
+router.post("/", protect , allowedTo(userRoles.ADMIN) ,  validateBody(categorySchema), createCategory);
+router.get("/", protect , allowedTo(userRoles.ADMIN),  getAllCategories);
+router.get("/:id", protect , allowedTo(userRoles.ADMIN),  getCategoryById);
+router.put("/:id", protect , allowedTo(userRoles.ADMIN),  validateBody(categorySchema), updateCategory);
+router.delete("/:id", protect , allowedTo(userRoles.ADMIN),  deleteCategory);
 
 export default router;
