@@ -155,24 +155,25 @@ export const forgetPassword = asyncWrapper(async (req, res, next) => {
       .json({ status: BAD_REQUEST, message: "User not found" });
   }
 
-  if (user.password !== newPassword) {
+  // Compare new password with old one (hashed)
+  const isSamePassword = await bcrypt.compare(newPassword, user.password);
+
+  if (isSamePassword) {
     return res.status(BAD_REQUEST).json({
       status: BAD_REQUEST,
       message: "New password cannot be the same as the old password",
     });
   }
 
+  // Hash and save new password
   const newHashedUserPassword = await bcrypt.hash(newPassword, 10);
-
   user.password = newHashedUserPassword;
-
   await user.save();
 
   res
     .status(SUCCESS)
     .json({ status: SUCCESS, message: "Password updated successfully" });
 });
-
 export const userProfile = asyncWrapper(async (req, res, next) => {
   const user_id = req.user._id;
   const user = await User.findOne({ _id: user_id });
