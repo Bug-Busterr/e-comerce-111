@@ -36,6 +36,7 @@ export const getAllProducts = asyncWrapper(async (req, res, next) => {
     price: 1,
     stockQuantity: 1,
     category: 1,
+    images:1
   })
     .limit(limit)
     .skip(skip)
