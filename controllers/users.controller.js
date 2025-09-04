@@ -204,7 +204,7 @@ export const updatePassword = asyncWrapper(async (req, res) => {
   const user_id = req.user._id;
   const { currentPassword, newPassword, confirmPassword } = req.body;
   const user = await User.findOne({ _id: user_id });
-if(currentPassword||newPassword||confirmPassword){
+
   if (!currentPassword || !newPassword || !confirmPassword) {
     return res.status(BAD_REQUEST).json({
       status: "ERROR",
@@ -243,4 +243,5 @@ if(currentPassword||newPassword||confirmPassword){
     .status(SUCCESS)
     .json({ status: "SUCCESS", message: "Password updates successfully" });
     }
-});
+);
+
